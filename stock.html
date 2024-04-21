@@ -1,73 +1,86 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LabTen</title>
-    <script src="server.js"></script>
 </head>
-
 <body>
-    <center>
-        <h1>REAL-TIME <br>Fetching of Simple Balance Sheet Statement</h1>
-        <table id='tb1' border="1">
-            <tr>
-                <th style="width: 90px;">Date</th>
-                <th style="width: 120px;">Receivables</th>
-                <th style="width: 120px;">Cash and cash equivalents</th>
-                <th style="width: 120px;">Total currency assets</th>
-                <th style="width: 120px;">Payables</th>
-                <th style="width: 120px;">Net Debt</th>
-            </tr>
-        </table>
-    </center>
-
- 
-
-    <script>
-        window.addEventListener('DOMContentLoaded', async () => {
-            const fetchData = async (url) => {
-                try {                   
-                    const response = await fetch(url);
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! Status: ${response.status}`);
-                    }
-                    return await response.json();
-                } catch (error) {
-                    console.error(`Error fetching data from ${url}:`, error);
-                    return null;
-                }
-            };
-
-            const processAndDisplayData = (data) => {
-                const table = document.getElementById("tb1");
-
-                const tr = document.createElement('tr');
-                for (const key of ["date", "netReceivables", "cashAndCashEquivalents", "totalCurrentAssets", "accountPayables", "netDebt"]) {
-                    const td = document.createElement('td');
-                    td.innerHTML = data[key];
-                    tr.appendChild(td);
-                }
-
-                table.appendChild(tr);
-            };
-
-            const companiesUrl = 'companies.json';
-            comp=await fetchData(companiesUrl);
-
-            for (let i = 0; i < comp.length; i++) {
-                const apiKey = 'qUxXyLDVqMjSaMcBeqlr6ab0zn3YssCe';
-                apiUrl = `https://financialmodelingprep.com/api/v3/balance-sheet-statement/${comp[i]}?period=annual&apikey=${apiKey}`;
-                data = await fetchData(apiUrl);
-                if (data) {
-                    processAndDisplayData(data[0]);
-                }
-            }
-
-        });
-    </script>
+<center>
+<h1>Real Time Fetch with Simple Balance Sheet Statement</h1>
+<table id='tbl' border=1>
+<tr>
+<th style="width: 120px;">date</th>
+<th style="width: 120px;">netReceivables</th>
+<th style="width: 120px;"> cashAndCashEquivalents</th>
+<th style="width: 120px;">accountPayables</th>
+<th style="width: 120px;">netDebt</th>
+<th style="width: 120px;">totalInvestments</th>
+<th style="width: 120px;">totalDeb</th>
+</tr>
+</table>
+</center>
 
 </body>
+<!-- https://financialmodelingprep.com/api/v3/balance-sheet-statement/AAPL?period=annual&apikey=RslEVBRQCqRMloHRNgFZKgkM1UhHPCKM" -->
 
-</html> 
+
+<script>
+    window.addEventListener('DOMContentLoaded',(event) =>{
+        let source=["https://financialmodelingprep.com/api/v3/balance-sheet-statement/AAPL?period=annual&apikey=RslEVBRQCqRMloHRNgFZKgkM1UhHPCKM"];
+        let index=0;
+        while(index<source.length){
+            console.log("fetching from"+source[index]);
+            fetch(source[index])
+            .then(response =>response.json())
+            .then(data =>{
+                console.log(data);
+                let dat=JSON.stringify(data)
+                dat1=data;
+                console.log(dat1);
+                let bod=document.getElementById("body");
+                var tb=document.getElementById("tbl");
+
+                for(let i=0;i<dat1.length;i++){
+                    var tr=document.createElement('tr');
+                    var td=document.createElement('td');
+                    td.innerHTML=dat1[i]["date"];
+                    tr.appendChild(td);
+                    tb.appendChild(tr);
+
+                    var td=document.createElement('td');
+                    td.innerHTML=dat1[i]["netReceivables"];
+                    tr.appendChild(td);
+                    tb.appendChild(tr);
+
+                    var td=document.createElement('td');
+                    td.innerHTML=dat1[i]["cashAndCashEquivalents"];
+                    tr.appendChild(td);
+                    tb.appendChild(tr);
+
+                    var td=document.createElement('td');
+                    td.innerHTML=dat1[i]["accountPayables"];
+                    tr.appendChild(td);
+                    tb.appendChild(tr);
+
+                    var td=document.createElement('td');
+                    td.innerHTML=dat1[i]["netDebt"];
+                    tr.appendChild(td);
+                    tb.appendChild(tr);
+
+                    var td=document.createElement('td');
+                    td.innerHTML=dat1[i]["totalInvestments"];
+                    tr.appendChild(td);
+                    tb.appendChild(tr);
+
+                    var td=document.createElement('td');
+                    td.innerHTML=dat1[i]["totalDebt"];
+                    tr.appendChild(td);
+                    tb.appendChild(tr);
+
+
+                }
+            })
+            .catch(error => console.log('error',error));
+            index+=1;
+        }
+    })
+</script>
+</html>
